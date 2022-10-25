@@ -1,5 +1,4 @@
-from array import array
-import string
+import json
 from particulasact.particula import Particula
 
 
@@ -58,5 +57,31 @@ class Lista_ligada():
         while(temp):
             array.append(str(temp.dato))
             temp = temp.siguiente
-
         return "".join(array)
+
+    def guardar(self, ubicacion):
+        temp = self.nodo_inicial
+        try:
+            with open(ubicacion, 'w') as archivo:
+                lista = []
+                while(temp):
+                    lista.append(temp.dato.to_dict())
+                    temp = temp.siguiente
+                json.dump(lista, archivo, indent=1)
+            return 1
+
+        except:
+            return 0
+
+    def abrir(self, ubicacion):
+        try:
+            with open(ubicacion, 'r') as archivo:
+                lista = json.load(archivo)
+                for particula in lista:
+                    particulaNodo = Particula(**particula)
+                    nodo = Nodo(particulaNodo)
+                    self.agregar_final(nodo)
+            return 1
+
+        except:
+            return 0
